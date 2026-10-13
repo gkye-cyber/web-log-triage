@@ -1,0 +1,8 @@
+192.168.1.10 - - [10/Oct/2026:13:55:36 -0400] "GET /index.html HTTP/1.1" 200 2326 "https://example.com" "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+203.0.113.45 - - [10/Oct/2026:13:56:01 -0400] "GET /products.php?id=1%20UNION%20SELECT%20null,username,password%20FROM%20users HTTP/1.1" 200 4502 "-" "sqlmap/1.6"
+198.51.100.12 - - [10/Oct/2026:13:57:14 -0400] "GET /static/../../../../etc/passwd HTTP/1.1" 404 162 "-" "curl/7.68.0"
+198.51.100.12 - - [10/Oct/2026:13:57:15 -0400] "GET /view?page=..%2f..%2f..%2fwindows%2fwin.ini HTTP/1.1" 200 892 "-" "curl/7.68.0"
+192.0.2.88 - - [10/Oct/2026:13:58:20 -0400] "POST /cgi-bin/test.sh?cmd=whoami%3Bid HTTP/1.1" 500 523 "-" "Python-urllib/3.10"
+203.0.113.99 - - [10/Oct/2026:13:59:01 -0400] "GET /admin HTTP/1.1" 404 162 "-" "gobuster/3.1.0"
+203.0.113.99 - - [10/Oct/2026:13:59:02 -0400] "GET /wp-login.php HTTP/1.1" 404 162 "-" "gobuster/3.1.0"
+203.0.113.99 - - [10/Oct/2026:13:59:03 -0400] "GET /.env HTTP/1.1" 404 162 "-" "gobuster/3.1.0"
