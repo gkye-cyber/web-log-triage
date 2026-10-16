@@ -56,6 +56,28 @@ class TestReporter(unittest.TestCase):
         self.assertEqual(decoded["threats"], [])
 
     def test_generate_html_report(self):
-        html_text = generate_html_report(build_forensic_report([], []))
-        self.assertIn("Web Log Triage Forensic Report", html_text) # looking for title to verify genration
-        self.assertIn("No incident records found. Clean traffic", html_text)
+        entry = LogEntry(
+            ip="198.51.100.10",
+            timestamp=None,
+            method="GET",
+            raw_uri="/test",
+            decoded_uri="/test",
+            protocol="HTTP/1.1",
+            status_code=200,
+            response_size=100,
+            referrer="-",
+            user_agent="-",
+            raw_line="sample access log line"
+        )
+        match = ThreatMatch(
+                    category="SQLi",
+                    severity="High",
+                    description="SQL injection attempt",
+                    matched_payload="UNION SELECT",
+                    entry=entry,
+                    mitre_id="T1190"
+                )
+        html_text = generate_html_report(build_forensic_report([entry], [match]))
+        self.assertIn("SQLi", html_text)
+        self.assertIn("T1190", html_text)
+        self.assertIn("UNION SELECT", html_text)
