@@ -2,3 +2,4 @@ __pycache__/
 .pytest_cache/
 dist/
 .venv/
+web_log_triage.egg-info
