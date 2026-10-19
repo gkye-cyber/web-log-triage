@@ -224,6 +224,6 @@ options:
 
 - **Developer:** Gavin Kye / Cybersecurity Consultant
 - **Role:** Security Engineer / Python Developer / Digital Forensic/IR/Malware Investigator
-- **GitHub:** [@yourusername](https://github.com/gkye-cyber)
+- **GitHub:** [@gkye-cyber](https://github.com/gkye-cyber)
 - **LinkedIn:** [linkedin.com/in/yourprofile](https://linkedin.com/in/gavin-kyesr)
 - **License:** Distributed under the MIT License. See [`LICENSE`](LICENSE) for details.
