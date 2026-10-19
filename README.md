@@ -88,7 +88,7 @@ If you are on Windows, you can use the automated `wlt-setup.ps1`
 
 ```text
 =================================================================
- 🛡️  WEB LOG TRIAGE - FORENSIC SUMMARY
+ WEB LOG TRIAGE - FORENSIC SUMMARY
 =================================================================
  Total Requests Analyzed : 8
  Unique IP Addresses     : 5
@@ -195,7 +195,7 @@ options:
 
 ---
 
-## 📝 Release Notes & Version History
+## Release Notes & Version History
 
 ### `v0.1.0` — Initial Release (October 2026)
 - **Core Parser:** Streaming ingestion of Combined and Common Log Format (CLF) access logs with URL decoding.
@@ -212,7 +212,7 @@ options:
 
 ---
 
-### 🗺️ Future Roadmap
+### Future Roadmap
 - [ ] Offline MaxMind GeoLite2 `.mmdb` database support
 - [ ] Custom user rule loading from external YAML/JSON files
 - [ ] Webhook alerting (Slack, Discord, Microsoft Teams)
