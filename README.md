@@ -4,6 +4,27 @@ A lightweight Python forensic command-line tool that parses standard web server 
 
 ---
 
+## Why `web-log-triage`?
+Web server access logs are often the **first and most critical line of evidence** when an application is probed, fuzzed, or breached. However, security analysts and sysadmins typically face a dilemma:
+- **Heavy Enterprise SIEMs** (Splunk, Datadog, Elastic) are costly, complex to configure, and require shipping sensitive logs off-premise.
+- **Ad-hoc CLI utilities** (`grep`, `awk`, `cut`) are tedious, miss multi-line behavioral patterns (like directory brute-forcing), and fail to decode obfuscated URL-encoded payloads.
+**`web-log-triage` bridges this gap.** It is a standalone, lightweight, zero-dependency threat hunter designed to turn raw, multi-gigabyte access logs into structured forensic intelligence in seconds.
+
+---
+
+## Core Goals & Design Philosophy
+
+1. **Zero External Dependencies:** Built using Python's standard library (with optional `rich` formatting), ensuring it runs out-of-the-box on air-gapped forensic workstations or minimal production servers.
+2. **Dual-Pass Detection Engine:**
+   - **Signature Inspection:** Evaluates individual requests against high-fidelity regexes for SQLi, LFI, RCE, and reconnaissance tools.
+   - **Behavioral Heuristics:** Aggregates error bursts (`404`/`403`) across time to detect automated scanners (Gobuster, DirBuster, ffuf).
+3. **Anti-Evasion & URL Normalization:** Automatically unquotes URL encodings (`%20` $\rightarrow$ space, `%27` $\rightarrow$ `'`, `%2f` $\rightarrow$ `/`) before analysis, preventing attackers from bypassing rules with simple obfuscation.
+4. **MITRE ATT&CK® Alignment:** Every alert is pre-mapped to official ATT&CK Enterprise techniques (`T1190`, `T1059.004`, `T1595`) to accelerate incident response escalation.
+5. **Memory-Safe Streaming:** Utilizes Python lazy generators to stream through multi-gigabyte log files line-by-line without causing system memory exhaustion.
+6. **Multi-Format Reporting:** Instant terminal dashboard for quick scoping, structured JSON for SIEM ingestion, and self-contained HTML reports for executive reporting.
+
+---
+
 ## Architecture & Operational Pipeline
 ![web-log-triage Operational Architecture](assets/architecture_flowchart.png)
 
@@ -59,6 +80,46 @@ If you are on Windows, you can use the automated `wlt-setup.ps1`
 
 # 6. Remove virtualenv, caches, and report file
 .\wlt-setup.ps1 clean
+```
+
+---
+
+## Sample Terminal Output
+
+```text
+=================================================================
+ 🛡️  WEB LOG TRIAGE - FORENSIC SUMMARY
+=================================================================
+ Total Requests Analyzed : 8
+ Unique IP Addresses     : 5
+ Total Threats Detected  : 12
+=================================================================
+
+[+] Top Offending IPs & Network Geolocation:
+  203.0.113.99     :  5 alerts | Location: Internal/Private (Local Network)
+  198.51.100.12    :  4 alerts | Location: Internal/Private (Local Network)
+  203.0.113.45     :  2 alerts | Location: Internal/Private (Local Network)
+  192.0.2.88       :  1 alerts | Location: Internal/Private (Local Network)
+
+[+] Threat Categories Breakdown:
+  • Scanner                : 4
+  • Sensitive File Access  : 3
+  • LFI                    : 2
+  • SQLi                   : 1
+  • RCE                    : 1
+  • Brute Force            : 1
+
+[+] Detailed Threat Findings:
+  [ 1] [High    ] SQLi         (MITRE T1190) from 203.0.113.45
+       Payload : UNION SELECT
+       URI     : /products.php?id=1 UNION SELECT null,username,password FROM users
+  [ 2] [Critical] RCE          (MITRE T1059.004) from 192.0.2.88
+       Payload : whoami
+       URI     : /cgi-bin/test.sh?cmd=whoami;id
+  [ 3] [High    ] Brute Force  (MITRE T1595.003) from 203.0.113.99
+       Payload : Potential directory brute-force: 3 failed requests
+       URI     : /.env
+=================================================================
 ```
 
 ---
@@ -131,3 +192,38 @@ options:
   ```powershell
   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
   ```
+
+---
+
+## 📝 Release Notes & Version History
+
+### `v0.1.0` — Initial Release (October 2026)
+- **Core Parser:** Streaming ingestion of Combined and Common Log Format (CLF) access logs with URL decoding.
+- **Threat Detection Engine:**
+  - Signature detection for SQLi, LFI, RCE, XSS, Cloud Metadata (SSRF), and malicious scanner User-Agents.
+  - Multi-request behavioral anomaly detection for directory brute-force attacks (`404`/`403` frequency spikes).
+  - Full alignment with **MITRE ATT&CK® Enterprise** techniques.
+- **IP Intelligence:** In-memory cached IP enrichment distinguishing RFC 1918 private/bogon networks from public targets with GeoIP lookup.
+- **Reporting Engine:**
+  - Dynamic terminal dashboard summary with status code and threat distributions.
+  - Machine-readable structured JSON export.
+  - Self-contained, responsive HTML forensic report with modern dark theme and threat badges.
+- **Cross-Platform Tooling:** Automated setup via `Makefile` (Linux/macOS) and `wlt-setup.ps1` (Windows PowerShell), plus `pyproject.toml` support.
+
+---
+
+### 🗺️ Future Roadmap
+- [ ] Offline MaxMind GeoLite2 `.mmdb` database support
+- [ ] Custom user rule loading from external YAML/JSON files
+- [ ] Webhook alerting (Slack, Discord, Microsoft Teams)
+- [ ] Support for JSON-formatted web server logs
+
+---
+
+## Author & Maintainer
+
+- **Developer:** Gavin Kye / Cybersecurity Consultant
+- **Role:** Security Engineer / Python Developer / Digital Forensic/IR/Malware Investigator
+- **GitHub:** [@yourusername](https://github.com/gkye-cyber)
+- **LinkedIn:** [linkedin.com/in/yourprofile](https://linkedin.com/in/gavin-kyesr)
+- **License:** Distributed under the MIT License. See [`LICENSE`](LICENSE) for details.
