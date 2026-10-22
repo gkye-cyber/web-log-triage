@@ -1,14 +1,14 @@
-# Automated Web Server Access Log Threat Hunter (`web-log-triage`)
+# Automated Web Server Access Log Threat Hunter (`Web Log Triage`)
 
 A lightweight Python forensic command-line tool that parses standard web server access logs (Apache, Nginx, or IIS Common/Combined Log Format), applies high-fidelity regular expressions to detect common attack vectors mapped to **MITRE ATT&CK®**, enriches IP addresses, and outputs structured **JSON** and interactive **HTML** forensic reports.
 
 ---
 
-## Why `web-log-triage`?
+## Why `Web Log Triage`?
 Web server access logs are often the **first and most critical line of evidence** when an application is probed, fuzzed, or breached. However, security analysts and sysadmins typically face a dilemma:
 - **Heavy Enterprise SIEMs** (Splunk, Datadog, Elastic) are costly, complex to configure, and require shipping sensitive logs off-premise.
 - **Ad-hoc CLI utilities** (`grep`, `awk`, `cut`) are tedious, miss multi-line behavioral patterns (like directory brute-forcing), and fail to decode obfuscated URL-encoded payloads.
-**`web-log-triage` bridges this gap.** It is a standalone, lightweight, zero-dependency threat hunter designed to turn raw, multi-gigabyte access logs into structured forensic intelligence in seconds.
+**`Web Log Trirage` bridges this gap.** It is a standalone, lightweight, zero-dependency threat hunter designed to turn raw, multi-gigabyte access logs into structured forensic intelligence in seconds.
 
 ---
 
@@ -223,7 +223,7 @@ options:
 ## Author & Maintainer
 
 - **Developer:** Gavin Kye / Cybersecurity Consultant
-- **Role:** Security Engineer / Python Developer / Digital Forensic/IR/Malware Investigator
+- **Role:** Digital Forensic/IR/Malware Investigator - Security/Software Engineer
 - **GitHub:** [@gkye-cyber](https://github.com/gkye-cyber)
 - **LinkedIn:** [linkedin.com/in/gavin-kyesr](https://linkedin.com/in/gavin-kyesr)
 - **License:** Distributed under the MIT License. See [`LICENSE`](LICENSE) for details.
