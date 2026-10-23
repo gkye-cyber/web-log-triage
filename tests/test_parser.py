@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 # adding src directory to sys.path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-from web_log_triage.parser import parse_log_line, parse_file
+from web_core_trace.parser import parse_log_line, parse_file
 
 class TestParser(unittest.TestCase):
     # test parsing a single log line

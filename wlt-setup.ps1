@@ -39,20 +39,20 @@ switch ($Task) {
     # Run triage on sample logs
     "run" {
         Write-Host "[-] Running web-log-triage on sample log..." -ForegroundColor Cyan
-        & $VenvPython -m web_log_triage.cli sample_data\access_sample.log
+        & $VenvPython -m web_core_trace.cli sample_data\access_sample.log
     }
 
     # Generate visual HTML report
     "html" {
         Write-Host "[-] Generating HTML forensic report..." -ForegroundColor Cyan
-        & $VenvPython -m web_log_triage.cli sample_data\access_sample.log --format html --output report.html
+        & $VenvPython -m web_core_trace.cli sample_data\access_sample.log --format html --output report.html
         Write-Host "[+] Generated report.html" -ForegroundColor Green
     }
 
     # Generate JSON report
     "json" {
         Write-Host "[-] Generating JSON forensic report..." -ForegroundColor Cyan
-        & $VenvPython -m web_log_triage.cli sample_data\access_sample.log --format json --output report.json
+        & $VenvPython -m web_core_trace.cli sample_data\access_sample.log --format json --output report.json
         Write-Host "[+] Generated report.json" -ForegroundColor Green
     }
 

@@ -3,8 +3,8 @@ import unittest
 from pathlib import Path
 # adding src directory to sys.path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-from web_log_triage.parser import LogEntry
-from web_log_triage.detector import check_signatures, detect_brute_force, ThreatDetector
+from web_core_trace.parser import LogEntry
+from web_core_trace.detector import check_signatures, detect_brute_force, ThreatDetector
 
 
 ### helper function to create a LogEntry for testing

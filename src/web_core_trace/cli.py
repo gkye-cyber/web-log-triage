@@ -2,10 +2,10 @@ import argparse
 import sys
 from pathlib import Path
 from typing import Optional
-from web_log_triage.parser import parse_file
-from web_log_triage.detector import ThreatDetector
-from web_log_triage.enricher import IPEnricher, enrich_ips
-from web_log_triage.reporter import (
+from web_core_trace.parser import parse_file
+from web_core_trace.detector import ThreatDetector
+from web_core_trace.enricher import IPEnricher, enrich_ips
+from web_core_trace.reporter import (
     build_forensic_report,
     generate_json_report,
     generate_html_report,

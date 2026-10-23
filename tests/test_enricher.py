@@ -3,7 +3,7 @@ import sys
 import unittest
 # adding src directory to sys.path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-from web_log_triage.enricher import IPEnricher, enrich_ips
+from web_core_trace.enricher import IPEnricher, enrich_ips
 from tests.test_detector import make_entry
 
 class TestEnricher(unittest.TestCase):

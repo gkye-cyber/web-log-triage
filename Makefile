@@ -2,7 +2,7 @@ VENV := .venv
 PYTHON := $(VENV)/bin/python
 PIP := $(VENV)/bin/pip
 PYTEST := $(VENV)/bin/pytest
-CLI := $(PYTHON) -m web-log-triage
+CLI := $(PYTHON) -m web_core_trace.cli
 
 .PHONY: help install test run html json clean
 

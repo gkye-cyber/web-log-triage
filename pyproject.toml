@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "web-log-triage"
-version = "0.1.0"
-description = "Automated Web Server Access Log Threat Hunter & Forensic Triage Tool"
+name = "WebCoreTrace"
+version = "1.0.0"
+description = "Dual-Mode Web Log & Runtime Memory Forensic Threat Hunter"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
@@ -13,7 +13,8 @@ dependencies = [
 ]
 
 [project.scripts]
-web-log-triage = "web_log_triage.cli:main_pipeline"
+web-core-trace = "web_core_trace.cli:main_pipeline"
+web-log-triage = "web_core_trace.cli:main_pipeline"
 
 [tool.setuptools.packages.find]
 where = ["src"]

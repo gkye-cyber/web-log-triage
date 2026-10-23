@@ -4,9 +4,9 @@ import json
 from pathlib import Path
 # adding src directory to sys.path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-from web_log_triage.reporter import build_forensic_report, generate_json_report, generate_html_report
-from web_log_triage.detector import ThreatMatch
-from web_log_triage.parser import LogEntry
+from web_core_trace.reporter import build_forensic_report, generate_json_report, generate_html_report
+from web_core_trace.detector import ThreatMatch
+from web_core_trace.parser import LogEntry
 
 class TestReporter(unittest.TestCase):
     def test_build_forensic_report(self):

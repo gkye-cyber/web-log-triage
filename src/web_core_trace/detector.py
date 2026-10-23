@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from collections import defaultdict
 from typing import Iterable, Optional
-from web_log_triage.parser import LogEntry
+from web_core_trace.parser import LogEntry
 import re
 
 @dataclass

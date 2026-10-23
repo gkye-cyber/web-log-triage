@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Iterable, Optional
-from web_log_triage.parser import LogEntry
+from web_core_trace.parser import LogEntry
 import ipaddress
 import json
 import urllib.request

@@ -3,9 +3,9 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from typing import Any, Iterable, Optional
 from pathlib import Path
-from web_log_triage.parser import LogEntry
-from web_log_triage.detector import ThreatMatch
-from web_log_triage.enricher import IPEnrichment
+from web_core_trace.parser import LogEntry
+from web_core_trace.detector import ThreatMatch
+from web_core_trace.enricher import IPEnrichment
 import html
 import json
 
