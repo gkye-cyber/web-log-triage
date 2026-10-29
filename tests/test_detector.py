@@ -4,7 +4,7 @@ from pathlib import Path
 # adding src directory to sys.path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from web_core_trace.parser import LogEntry
-from web_core_trace.detector import check_signatures, detect_brute_force, ThreatDetector
+from web_core_trace.detector import check_signatures, detect_brute_force, detect_php2shell_stale_worker, ThreatDetector
 
 
 ### helper function to create a LogEntry for testing
@@ -70,6 +70,24 @@ class TestDetector(unittest.TestCase):
         self.assertEqual(len(matches), 1)
         self.assertEqual(matches[0].category, "Brute Force")
         self.assertEqual(matches[0].entry.ip, "10.0.0.1")
+
+    def test_php2shell_oom_detection(self):
+        entry = make_entry(uri="/index.php?a[][][][][]=1")
+        matches = check_signatures(entry)
+        self.assertTrue(any(m.category == "PHP2Shell (CVE-2026-109618)" for m in matches))
+
+    def test_php2shell_stale_state_detection(self):
+        entry = make_entry(uri="/upload.php?PHP_SESSION_UPLOAD_PROGRESS=crash_state")
+        matches = check_signatures(entry)
+        self.assertTrue(any(m.category == "PHP2Shell (CVE-2026-109619)" for m in matches))
+
+    def test_php2shell_stale_worker_sequence(self):
+        entries = [
+            make_entry(ip="10.0.0.5", uri="/worker.php", status_code=500),
+            make_entry(ip="10.0.0.5", uri="/worker.php", status_code=200)
+        ]
+        matches = detect_php2shell_stale_worker(entries)
+        self.assertTrue(any(m.category == "PHP2Shell (CVE-2026-109619)" for m in matches))
 
     # end-to-end test
     def test_threat_detector_end_to_end(self):

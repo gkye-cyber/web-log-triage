@@ -127,6 +127,40 @@ cloud_metadata_rule = SignatureRule(
     mitre_tactic="Credential Access"
 )
 
+# php2shell OOM state cleanup signature rule
+php2shell_oom_rule = SignatureRule(
+    name="php2shell OOM State Trigger",
+    category="PHP2Shell (CVE-2026-109618)",
+    severity="Critical",
+    description="Detects oversized URL-encoded keys/queries or deep array nesting designed to trigger OOM state cleanup.",
+    pattern=re.compile(
+        r"(?i)(?:\[\s*\]\s*){5,}|"
+        r"[?&][^=&\s]{128,}=|"
+        r"[?&][^=&\s]+=[^&\s]{256,}|"
+        r"(?:%[0-9a-f]{2}){64,}"
+    ),
+    target_field="raw_uri", # catches raw '%XX' floods as well as long key/values
+    mitre_id="T1190",
+    mitre_technique="Exploit Public-Facing Application",
+    mitre_tactic="Initial Access"
+)
+
+# php2shell multiplart and stale-state manipulation rule
+php2shell_stale_state_rule = SignatureRule(
+    name="PHP2Shell Stale-State Manipulation",
+    category="PHP2Shell (CVE-2026-109619)",
+    severity="Critical",
+    description="Detects multipart anomalies and stale-state manipulation targeting persistent worker threads.",
+    pattern=re.compile(
+        r"(?i)(PHP_SESSION_UPLOAD_PROGRESS|multipart/form-data|boundary=|"
+        r"_zend_mm_|auto_prepend_file|allow_url_include)"
+    ),
+    target_field="decoded_uri",
+    mitre_id="T1190",
+    mitre_technique="Exploit Public-Facing Application",
+    mitre_tactic="Initial Access"
+)
+
 ### matching function to check log entry against signature rules
 RULES: list[SignatureRule] = [
     sqlli_rule,
@@ -135,7 +169,9 @@ RULES: list[SignatureRule] = [
     scanner_rule,
     sensitive_file_rule,
     xss_rule,
-    cloud_metadata_rule
+    cloud_metadata_rule,
+    php2shell_oom_rule,
+    php2shell_stale_state_rule
 ]
 
 def check_signatures(entry: LogEntry, rules: Optional[list[SignatureRule]] = None) -> list[ThreatMatch]:
@@ -189,6 +225,40 @@ def detect_brute_force(
                 )
     return matches
 
+### behavioral detection for PHP2Shell persistent worker stale-state abuse
+def detect_php2shell_stale_worker(entries: Iterable[LogEntry]) -> list[ThreatMatch]:
+    entries_by_ip = defaultdict(list)
+    for entry in entries:
+        entries_by_ip[entry.ip].append(entry)
+
+    matches: list[ThreatMatch] = []
+    for ip, ip_entries in entries_by_ip.items():
+        for i in range(len(ip_entries) - 1):
+            curr_entry = ip_entries[i]
+            next_entry = ip_entries[i + 1]
+            """
+            checking for 505/502/503 worker fault on PHP route followed by
+            an immediate follow-up
+            """
+            if (
+                curr_entry.status_code in (500, 502, 503)
+                and ".php" in curr_entry.decoded_uri.lower()
+                and next_entry.status_code == 200
+            ):
+                matches.append(
+                    ThreatMatch(
+                        category="PHP2Shell (CVE-2026-109619)",
+                        severity="Critical",
+                        description=f"Detected worker fault ({curr_entry.status_code}) followed by immediate state-reuse request from {ip}.",
+                        matched_payload=f"Fault: {curr_entry.method} {curr_entry.decoded_uri[:40]} ({curr_entry.status_code}) -> Reuse: {next_entry.method} {next_entry.decoded_uri[:40]} ({next_entry.status_code})",
+                        entry=next_entry,
+                        mitre_id="T1190",
+                        mitre_technique="Exploit Public-Facing Application",
+                        mitre_tactic="Initial Access"
+                    )
+                )
+                break
+    return matches
 
 ### unified function to detect threats in log entries
 class ThreatDetector:
@@ -208,5 +278,8 @@ class ThreatDetector:
         # multi-entry behavioral detection
         brute_force_matches = detect_brute_force(entry_list, threshold=self.brute_force_threshold, status_codes=(401, 403, 404))
         all_matches.extend(brute_force_matches)
+
+        # PHP2Shell multi-entry stale worker detection
+        all_matches.extend(detect_php2shell_stale_worker(entry_list))
 
         return all_matches
